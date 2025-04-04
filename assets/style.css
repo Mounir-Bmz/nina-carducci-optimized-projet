@@ -38,10 +38,6 @@ body {
 	color: #000
 }
 
-.social-link img {
-	width: 20px;
-}
-
 #about {
 	display: flex;
 	background-color: #F6D2B8;
@@ -80,11 +76,6 @@ body {
     width: 100%;
     height: 100%;
     object-fit: contain;
-}
-
-.social-icon {
-    width: 24px;
-    height: 24px;
 }
 
 /* Carrousel */

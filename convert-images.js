@@ -26,18 +26,43 @@ async function createOutputDir() {
     }
 }
 
-// Fonction pour convertir une image en WebP sans redimensionner
+// Fonction pour convertir une image en WebP avec redimensionnement
 async function convertImage(filePath, outputPath) {
     try {
         const image = sharp(filePath);
-        const metadata = await image.metadata(); // Récupère les dimensions originales
+        const metadata = await image.metadata();
+
+        // Redimensionner en conservant le ratio d’aspect
+        if (filePath.includes('slider')) {
+            // Carrousel : largeur max 1920px
+            image.resize({
+                width: 1920,
+                fit: 'inside', // Conserve le ratio d’aspect
+                withoutEnlargement: true // Ne pas agrandir si l’image est plus petite
+            });
+        } else if (filePath.includes('gallery')) {
+            // Galerie : largeur max 400px
+            image.resize({
+                width: 400,
+                fit: 'inside',
+                withoutEnlargement: true
+            });
+        } else if (filePath.includes('instagram')) {
+            // Icône Instagram : 24x24
+            image.resize({
+                width: 24,
+                height: 24,
+                fit: 'contain'
+            });
+        }
 
         await image
-            .webp({ quality: 100 }) // Qualité maximale pour éviter la perte de qualité
+            .webp({ quality: 90 }) // Qualité à 90
             .toFile(outputPath);
 
-        console.log(`Image convertie : ${filePath} -> ${outputPath} (${metadata.width}x${metadata.height})`);
-        return { width: metadata.width, height: metadata.height }; // Retourne les dimensions pour le HTML
+        const newMetadata = await sharp(outputPath).metadata();
+        console.log(`Image convertie : ${filePath} -> ${outputPath} (${newMetadata.width}x${newMetadata.height})`);
+        return { width: newMetadata.width, height: newMetadata.height };
     } catch (err) {
         console.error(`Erreur lors de la conversion de ${filePath} :`, err);
         return null;
@@ -47,7 +72,7 @@ async function convertImage(filePath, outputPath) {
 // Fonction principale pour traiter toutes les images
 async function convertAllImages() {
     await createOutputDir();
-    const dimensionsMap = {}; // Stocke les dimensions de chaque image
+    const dimensionsMap = {};
 
     for (const dir of sourceDirs) {
         try {
@@ -62,7 +87,7 @@ async function convertAllImages() {
                     const outputPath = path.join(outputDir, relativePath, outputFileName);
                     const dims = await convertImage(filePath, outputPath);
                     if (dims) {
-                        dimensionsMap[filePath] = dims; // Stocke les dimensions
+                        dimensionsMap[filePath] = dims;
                     }
                 }
             }
