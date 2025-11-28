@@ -1,3 +1,4 @@
 .idea
 .DS_Store
-.projet_de_base
+projet_de_base
+.gitignore
