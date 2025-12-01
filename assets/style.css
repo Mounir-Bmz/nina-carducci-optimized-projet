@@ -8,6 +8,10 @@ body {
     font-style: normal;
 }
 
+.visually-hidden {
+  color: #000 !important;
+}
+
 .top-header {
 	background-color: white;
 	position: sticky;
