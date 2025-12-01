@@ -1,0 +1,4 @@
+vérifier les perfs audit light
+
+Le cahier de recette à rendre (dans le tableau 5, mettre uniquement les erreurs js) et ajouter les captures d'écran Rich Snippet + Wave
+
